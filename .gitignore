@@ -1,0 +1,25 @@
+# Capacitor & Android
+/android/app/build/
+/android/.gradle/
+/android/local.properties
+/android/app/google-services.json
+/android/app/src/main/assets/public/
+/android/app/src/main/assets/capacitor.config.json
+/android/app/src/main/assets/capacitor.plugins.json
+/www/
+/_android_backup/
+node_modules/
+build/
+dist/
+coverage/
+.DS_Store
+*.log
+.env*
+!.env.example
+*.iml
+.gradle
+/local.properties
+/.idea/
+/captures
+.externalNativeBuild
+.cxx

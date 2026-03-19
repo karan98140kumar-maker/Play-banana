@@ -1,0 +1,5 @@
+{
+  "name": "Play Banana",
+  "description": "A rewards application where users can earn coins through various activities and withdraw them.",
+  "requestFramePermissions": []
+}

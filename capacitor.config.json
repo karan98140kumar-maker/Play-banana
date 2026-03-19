@@ -1,0 +1,7 @@
+{
+  "appId": "com.playbanana.rewards.app",
+  "appName": "Play Banana",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "plugins": {}
+}

@@ -1,0 +1,97 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "Stores user profile information and settings",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Firebase Auth UID" },
+        "email": { "type": "string", "format": "email" },
+        "referral_code": { "type": "string" },
+        "referred_by": { "type": "string" },
+        "is_admin": { "type": "boolean" },
+        "display_name": { "type": "string" },
+        "avatar": { "type": "string" },
+        "created_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "referral_code", "is_admin", "created_at"]
+    },
+    "Wallet": {
+      "title": "User Wallet",
+      "description": "Stores coin balance and earning statistics",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "display_name": { "type": "string" },
+        "balance": { "type": "integer" },
+        "total_earned": { "type": "integer" },
+        "referral_earnings": { "type": "integer" },
+        "checkin_streak": { "type": "integer" },
+        "last_daily_checkin": { "type": "string", "format": "date-time" },
+        "ads_today": { "type": "integer" },
+        "last_ad": { "type": "string", "format": "date-time" }
+      },
+      "required": ["balance", "total_earned", "referral_earnings", "checkin_streak"]
+    },
+    "Transaction": {
+      "title": "Transaction",
+      "description": "Records of earnings and withdrawals",
+      "type": "object",
+      "properties": {
+        "user_id": { "type": "string" },
+        "amount": { "type": "integer" },
+        "type": { "type": "string", "enum": ["checkin", "ad", "referral", "spin", "scratch", "quiz", "article", "withdraw", "balloon"] },
+        "description": { "type": "string" },
+        "created_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["user_id", "amount", "type", "description", "created_at"]
+    },
+    "Withdrawal": {
+      "title": "Withdrawal Request",
+      "description": "Pending and processed withdrawal requests",
+      "type": "object",
+      "properties": {
+        "user_id": { "type": "string" },
+        "email": { "type": "string" },
+        "amount": { "type": "integer" },
+        "method": { "type": "string", "enum": ["paytm", "upi", "bank"] },
+        "details": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "approved", "rejected"] },
+        "created_at": { "type": "string", "format": "date-time" },
+        "updated_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["user_id", "amount", "method", "details", "status", "created_at"]
+    },
+    "PromoCode": {
+      "title": "Promo Code",
+      "description": "Redeemable codes for coins",
+      "type": "object",
+      "properties": {
+        "code": { "type": "string" },
+        "reward": { "type": "integer" },
+        "max_uses": { "type": "integer" },
+        "current_uses": { "type": "integer" },
+        "used_by": { "type": "array", "items": { "type": "string" } },
+        "expires_at": { "type": "string", "format": "date-time" },
+        "created_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["code", "reward", "max_uses", "current_uses", "used_by", "created_at"]
+    },
+    "AppConfig": {
+      "title": "App Configuration",
+      "description": "Global application settings and branding",
+      "type": "object",
+      "properties": {
+        "app_icon": { "type": "string", "description": "Base64 encoded app icon" }
+      }
+    }
+  },
+  "firestore": {
+    "/users/{userId}": { "schema": "User", "description": "User profiles" },
+    "/wallets/{userId}": { "schema": "Wallet", "description": "User wallets" },
+    "/transactions/{txId}": { "schema": "Transaction", "description": "Transaction logs" },
+    "/withdrawals/{wId}": { "schema": "Withdrawal", "description": "Withdrawal requests" },
+    "/promo_codes/{codeId}": { "schema": "PromoCode", "description": "Promo codes" },
+    "/settings/{configId}": { "schema": "AppConfig", "description": "Global settings" }
+  }
+}

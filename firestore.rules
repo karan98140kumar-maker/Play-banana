@@ -1,0 +1,106 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    function isDocOwner() {
+      return isAuthenticated() && request.auth.uid == resource.data.uid;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && 
+        (request.auth.token.email == "vinodram011982@gmail.com");
+    }
+
+    function isValidPromoCode(data) {
+      return data.code is string && data.code.size() > 0 && data.code.size() <= 50 &&
+             data.reward is number && data.reward >= 0 &&
+             data.max_uses is number && data.max_uses >= 0 &&
+             data.current_uses is number && data.current_uses >= 0 &&
+             data.used_by is list &&
+             data.created_at is string;
+    }
+
+    function isValidUser(data) {
+      return data.uid is string && data.uid.size() < 128 &&
+             data.email is string && data.email.size() < 256 &&
+             data.referral_code is string && data.referral_code.size() < 20 &&
+             data.is_admin is bool &&
+             data.created_at is string &&
+             (!('display_name' in data) || (data.display_name is string && data.display_name.size() < 100)) &&
+             (!('avatar' in data) || (data.avatar is string && data.avatar.size() < 500));
+    }
+
+    function isValidWallet(data) {
+      return data.uid is string && data.uid.size() < 128 &&
+             data.balance is number &&
+             data.total_earned is number &&
+             data.referral_earnings is number &&
+             data.checkin_streak is number &&
+             data.ads_today is number &&
+             (!('display_name' in data) || (data.display_name is string && data.display_name.size() < 100)) &&
+             (!('last_daily_checkin' in data) || (data.last_daily_checkin == null || data.last_daily_checkin is string)) &&
+             (!('last_ad' in data) || (data.last_ad == null || data.last_ad is string));
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isOwner(userId) && isValidUser(request.resource.data);
+      allow update: if (isOwner(userId) && isValidUser(request.resource.data) && (!('is_admin' in request.resource.data) || request.resource.data.is_admin == resource.data.is_admin)) || isAdmin();
+    }
+
+    match /wallets/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId) || isAdmin();
+    }
+
+    match /transactions/{txId} {
+      allow read: if isAuthenticated() && (resource.data.user_id == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() && request.resource.data.user_id == request.auth.uid;
+      allow update, delete: if isAdmin();
+    }
+
+    match /withdrawals/{wId} {
+      allow read: if isAuthenticated() && (resource.data.user_id == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() && request.resource.data.user_id == request.auth.uid;
+      allow update: if isAdmin();
+      allow delete: if false;
+    }
+
+    match /promo_codes/{codeId} {
+      allow read: if isAuthenticated();
+      allow create: if isAdmin() && isValidPromoCode(request.resource.data);
+      allow delete: if isAdmin();
+      allow update: if (isAdmin() && isValidPromoCode(request.resource.data)) || 
+                      (isAuthenticated() && 
+                       isValidPromoCode(request.resource.data) &&
+                       request.resource.data.current_uses == resource.data.current_uses + 1 &&
+                       request.resource.data.used_by.size() == resource.data.used_by.size() + 1 &&
+                       request.auth.uid in request.resource.data.used_by &&
+                       !(request.auth.uid in resource.data.used_by) &&
+                       resource.data.current_uses < resource.data.max_uses &&
+                       request.resource.data.reward == resource.data.reward &&
+                       request.resource.data.max_uses == resource.data.max_uses &&
+                       request.resource.data.code == resource.data.code);
+    }
+
+    match /settings/{configId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+  }
+}
