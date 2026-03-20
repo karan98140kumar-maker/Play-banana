@@ -2,6 +2,12 @@
   "appId": "com.playbanana.rewards.app",
   "appName": "Play Banana",
   "webDir": "dist",
-  "bundledWebRuntime": false,
-  "plugins": {}
+  "server": {
+    "androidScheme": "https"
+  },
+  "plugins": {
+    "AdMob": {
+      "androidAppId": "ca-app-pub-8553313988636402~3645620958"
+    }
+  }
 }
