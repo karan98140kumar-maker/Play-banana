@@ -29,7 +29,9 @@
         "checkin_streak": { "type": "integer" },
         "last_daily_checkin": { "type": "string", "format": "date-time" },
         "ads_today": { "type": "integer" },
-        "last_ad": { "type": "string", "format": "date-time" }
+        "last_ad": { "type": "string", "format": "date-time" },
+        "daily_math": { "type": "integer" },
+        "last_math_date": { "type": "string" }
       },
       "required": ["balance", "total_earned", "referral_earnings", "checkin_streak"]
     },
@@ -40,7 +42,7 @@
       "properties": {
         "user_id": { "type": "string" },
         "amount": { "type": "integer" },
-        "type": { "type": "string", "enum": ["checkin", "ad", "referral", "spin", "scratch", "quiz", "article", "withdraw", "balloon"] },
+        "type": { "type": "string", "enum": ["checkin", "ad", "referral", "spin", "scratch", "quiz", "article", "withdraw", "balloon", "math_quiz"] },
         "description": { "type": "string" },
         "created_at": { "type": "string", "format": "date-time" }
       },

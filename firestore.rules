@@ -49,7 +49,9 @@ service cloud.firestore {
              data.ads_today is number &&
              (!('display_name' in data) || (data.display_name is string && data.display_name.size() < 100)) &&
              (!('last_daily_checkin' in data) || (data.last_daily_checkin == null || data.last_daily_checkin is string)) &&
-             (!('last_ad' in data) || (data.last_ad == null || data.last_ad is string));
+             (!('last_ad' in data) || (data.last_ad == null || data.last_ad is string)) &&
+             (!('daily_math' in data) || (data.daily_math is number)) &&
+             (!('last_math_date' in data) || (data.last_math_date is string));
     }
 
     // ===============================================================
@@ -64,8 +66,8 @@ service cloud.firestore {
 
     match /wallets/{userId} {
       allow read: if isOwner(userId) || isAdmin();
-      allow create: if isOwner(userId);
-      allow update: if isOwner(userId) || isAdmin();
+      allow create: if isOwner(userId) && isValidWallet(request.resource.data);
+      allow update: if (isOwner(userId) && isValidWallet(request.resource.data)) || isAdmin();
     }
 
     match /transactions/{txId} {
