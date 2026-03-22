@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Play Banana</string>
+    <string name="title_activity_main">Play Banana</string>
+    <string name="package_name">com.playbanana.rewards.app</string>
+    <string name="custom_url_scheme">com.playbanana.rewards.app</string>
+</resources>
