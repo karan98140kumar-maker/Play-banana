@@ -26,6 +26,7 @@
         "balance": { "type": "integer" },
         "total_earned": { "type": "integer" },
         "referral_earnings": { "type": "integer" },
+        "referral_count": { "type": "integer", "description": "Total number of users referred" },
         "checkin_streak": { "type": "integer" },
         "last_daily_checkin": { "type": "string", "format": "date-time" },
         "ads_today": { "type": "integer" },
@@ -84,7 +85,9 @@
       "description": "Global application settings and branding",
       "type": "object",
       "properties": {
-        "app_icon": { "type": "string", "description": "Base64 encoded app icon" }
+        "app_icon": { "type": "string", "description": "Base64 encoded app icon" },
+        "referral_bonus_referrer": { "type": "integer", "description": "Bonus coins for the referrer" },
+        "referral_bonus_new_user": { "type": "integer", "description": "Bonus coins for the new user" }
       }
     }
   },
