@@ -3,7 +3,7 @@ name: Build Play Mango APK
 on: 
   push:
     branches: [ main ]
-  workflow_dispatch: # Isse aap manually bhi build start kar sakte hain
+  workflow_dispatch:
 
 jobs:
   build:
@@ -17,26 +17,21 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Install Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: '22' # Latest stable version use karein warning hatane ke liye
 
       - name: Install Dependencies
-        run: npm install
+        run: npm install --force
 
       - name: Build Web Project
-  run: npm run build
-  working-directory: ./Play-banana # Agar aapka sara code is folder ke andar hai
+        run: npm run build
 
-
-      - name: Install Capacitor
-        run: npm install @capacitor/core @capacitor/cli @capacitor/android
-
-      - name: Add Android Platform
+      - name: Sync Capacitor
         run: |
-          npx cap add android
-          npx cap copy android
+          npx cap add android || true
+          npx cap sync android
 
       - name: Build Debug APK
         run: |
@@ -44,8 +39,8 @@ jobs:
           chmod +x gradlew
           ./gradlew assembleDebug
 
-      - name: Upload APK Artifact
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Play-Mango-Debug-APK
+          name: Play-Mango-APK
           path: android/app/build/outputs/apk/debug/app-debug.apk
