@@ -1,7 +1,7 @@
 {
   "android": {
     "release": "debug",
-    "gradleVersion": "8.0",
+    "gradleVersion": "8.7",
     "androidVersion": "13"
   }
 }
